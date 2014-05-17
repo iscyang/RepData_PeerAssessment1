@@ -7,7 +7,7 @@ performs analysis on steps variable based on different categories.
 First, let's load activity.csv and check its structure.
 
 ```r
-activity = read.csv("activity.csv", stringsAsFactor = F)
+activity = read.csv(unz("activity.zip", "activity.csv"), stringsAsFactor = F)
 str(activity)
 ```
 
@@ -191,7 +191,7 @@ day = c(rep("weekday", 288), rep("weekend", 288))
 plotData = data.frame(meanSteps, interval, day)
 plotData$day = as.factor(plotData$day)
 xyplot(meanSteps ~ interval | day, data = plotData, type = "l", ylab = "Average number of steps in 5-min interval", 
-    xlab = "index of 5-min intervals within one day", layout = c(1, 2))
+    xlab = "index of 5-min intervals", layout = c(1, 2))
 ```
 
 ![plot of chunk unnamed-chunk-12](figure/unnamed-chunk-12.png) 
