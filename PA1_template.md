@@ -90,31 +90,22 @@ sum(is.na(activity$steps))
 ```
 
 
-Replace NA with previous value in time series of the new data frame, imputedActivity.
+Replace NA with last known value in time series of the new data frame, imputedActivity.
+
+If the very first value is NA, we set it to mean value of steps in the entire dataset.
 
 ```r
 na.location = is.na(activity$steps)
 imputedActivity = activity
 if (na.location[1]) {
     lastSteps = 0
-    imputedActivity$steps[1] = 0
+    imputedActivity$steps[1] = mean(imputedActivity$steps, na.rm = T)
 } else {
     lastSteps = imputedActivity$steps[1]
 }
-na.location[1]
 ```
 
-```
-## [1] TRUE
-```
-
-```r
-imputedActivity$steps[1]
-```
-
-```
-## [1] 0
-```
+Now we look each steps variable and replace it with lastSteps if it's NA.
 
 ```r
 for (i in seq(2, nrow(imputedActivity))) {
@@ -124,6 +115,11 @@ for (i in seq(2, nrow(imputedActivity))) {
         lastSteps = imputedActivity$steps[i]
     }
 }
+```
+
+The final number of NA in imputedActivity$steps should be zero.
+
+```r
 sum(is.na(imputedActivity$steps))
 ```
 
@@ -140,7 +136,7 @@ imputedActivity.dailyTotalSteps = tapply(imputedActivity$steps, imputedActivity$
 hist(imputedActivity.dailyTotalSteps)
 ```
 
-![plot of chunk unnamed-chunk-9](figure/unnamed-chunk-9.png) 
+![plot of chunk unnamed-chunk-11](figure/unnamed-chunk-11.png) 
 
 
 The mean and median of activity.dailyTotalSteps.
@@ -150,7 +146,7 @@ mean(imputedActivity.dailyTotalSteps, na.rm = T)
 ```
 
 ```
-## [1] 9354
+## [1] 9355
 ```
 
 ```r
@@ -162,7 +158,7 @@ median(imputedActivity.dailyTotalSteps, na.rm = T)
 ```
 
 
-We can clearly see mean and median values change after we impute.  Both of them become larger.
+We can clearly see mean and median values change after we impute.
 
 Let's compare activities between weekdays and weekends.
 First, partition days into weekday and weekend.
@@ -194,7 +190,7 @@ xyplot(meanSteps ~ interval | day, data = plotData, type = "l", ylab = "Average 
     xlab = "index of 5-min intervals", layout = c(1, 2))
 ```
 
-![plot of chunk unnamed-chunk-12](figure/unnamed-chunk-12.png) 
+![plot of chunk unnamed-chunk-14](figure/unnamed-chunk-14.png) 
 
 
 We can clearly see the difference between these two plots.
